@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<Schema name="fact">
+<!--
+  == This software is subject to the terms of the Eclipse Public License v1.0
+  == Agreement, available at the following URL:
+  == http://www.eclipse.org/legal/epl-v10.html.
+  == You must accept the terms of that agreement to use this software.
+  ==
+  == Copyright (C) 2000-2005 Julian Hyde
+  == Copyright (C) 2005-2011 Pentaho and others
+  == All Rights Reserved.
+  -->
+
+<!-- Shared dimensions -->
+
+  
+
+<!-- Sales -->
+<!-- Sales -->
+<Cube name="Fact" defaultMeasure="Amount">
+  <Table name="fact_rental"/>
+
+   <Dimension name="Customer" foreignKey="sk_customers">
+    <Hierarchy hasAll="true" allMemberName="All Customers" primaryKey="sk_customers">
+      <Table name="dim_customers" />
+      
+      <!-- Menentukan level tahun sebagai "Years" -->
+      <Level name="CustomerFullName" column="name_customer"/>
+      <Level name="CustomerEmail" column="email"/>
+      <Level name="CustomerCountry" column="country"/>
+      <Level name="CustomerCity" column="city"/>
+
+    </Hierarchy>
+  </Dimension> 
+ 
+  <Dimension name="Staff" foreignKey="sk_store">
+    <Hierarchy hasAll="true" allMemberName="All Staff" primaryKey="sk_store">
+      <Table name="dim_store" />
+      
+      <!-- Menentukan level tahun sebagai "Years" -->
+      <Level name="StaffFullName" column="name_staff"/>
+      <Level name="StaffEmail" column="email"/>
+      <Level name="StaffUsername" column="username"/>
+      <Level name="StaffCountry" column="country"/>
+    </Hierarchy>
+  </Dimension>     
+
+  <Dimension name="Film" foreignKey="sk_film">
+    <Hierarchy hasAll="true" allMemberName="All Film" primaryKey="sk_film">
+      <Table name="dim_film" />
+      
+      <!-- Menentukan level tahun sebagai "Years" -->
+      <Level name="FilmName" column="title" />
+      <Level name="FilmCategory" column="category" />
+      <Level name="FilmRilis" column="release_year" />
+      <Level name="FilmRating" column="rating" />
+
+    </Hierarchy>
+  </Dimension>
+
+  <Dimension name="Actor" foreignKey="sk_film">
+  <Hierarchy hasAll="true" allMemberName="All Actors" primaryKey="sk_film_actor">
+    <Table name="dim_actor" />
+    <Level name="ActorName" column="name_actor" />
+  </Hierarchy>
+</Dimension>
+
+
+  <Dimension name="Date" foreignKey="trx_id">
+    <Hierarchy hasAll="true" allMemberName="All Date" primaryKey="trx_id">
+      <Table name="fact_rental" />
+      <Level name="PaymentDate" column="payment_date" />
+    </Hierarchy>
+  </Dimension>
+
+  <!-- Measures -->
+    <Measure name="TotalInventory" column="inventory_id" aggregator="distinct-count" formatString="Standard"/>
+    <Measure name="TotalPayment" column="payment_id" aggregator="distinct-count" formatString="Standard"/>
+    <Measure name="TotalAmount" column="amount" aggregator="sum" formatString="Standard"/>
+</Cube>
+
+
+</Schema>
